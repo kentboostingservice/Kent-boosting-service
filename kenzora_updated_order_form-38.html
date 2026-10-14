@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KENZORA | Boosting Service</title>
+<style>
+  :root { color-scheme: dark; --bg:#070b14; --panel:#101827; --line:#24344d; --blue:#1688ff; --cyan:#56c8ff; --text:#f3f7ff; --muted:#a8b6cc; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:Arial,Helvetica,sans-serif; background:radial-gradient(circle at top,#102548 0,#070b14 46%); color:var(--text); min-height:100vh; }
+  .wrap { width:min(760px,100%); margin:0 auto; padding:26px 16px 40px; }
+  header { text-align:center; padding:12px 0 24px; }
+  .logo { display:inline-block; border:1px solid #285b91; border-radius:12px; padding:9px 14px; color:#8bd5ff; font-weight:900; letter-spacing:4px; font-size:12px; }
+  h1 { margin:15px 0 8px; font-size:clamp(28px,7vw,42px); letter-spacing:1px; }
+  h1 span { color:var(--blue); }
+  .intro { color:var(--muted); margin:0 auto; line-height:1.6; max-width:480px; font-size:14px; }
+  .card { background:rgba(16,24,39,.96); border:1px solid var(--line); border-radius:18px; padding:22px; box-shadow:0 18px 55px #0005; }
+  .card h2 { margin:0 0 5px; font-size:21px; }
+  .subhead { margin:0 0 22px; color:var(--muted); font-size:13px; }
+  .platforms { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; margin-bottom:22px; }
+  .platform { position:relative; }
+  .platform input { position:absolute; opacity:0; inset:0; }
+  .platform label { display:flex; align-items:center; justify-content:center; min-height:48px; border:1px solid var(--line); border-radius:11px; background:#0a1220; font-size:13px; font-weight:700; cursor:pointer; text-align:center; padding:8px 5px; }
+  .platform input:checked + label { border-color:var(--blue); background:#102d50; box-shadow:inset 0 0 0 1px var(--blue); color:#a8dcff; }
+  .field { margin:0 0 16px; }
+  label.field-label { display:block; margin-bottom:8px; font-size:13px; font-weight:700; color:#dbe8fa; }
+  select,input { width:100%; border:1px solid #2a3b55; border-radius:10px; background:#080f1b; color:var(--text); min-height:47px; padding:12px 13px; font-size:14px; outline:none; }
+  select:focus,input:focus { border-color:var(--blue); box-shadow:0 0 0 3px #1688ff22; }
+  input::placeholder { color:#71819a; }
+  .two { display:grid; grid-template-columns:1fr 1fr; gap:13px; }
+  .hint { color:#8ea2bf; font-size:11px; margin-top:7px; line-height:1.5; }
+  .budget { border:1px solid #254b74; background:#0b1b2e; border-radius:12px; padding:14px; margin:4px 0 18px; }
+  .budget label { display:block; font-size:13px; font-weight:700; margin-bottom:8px; }
+  .budget small { display:block; color:var(--muted); font-size:11px; margin-top:7px; }
+  button { width:100%; border:0; border-radius:11px; min-height:49px; background:linear-gradient(100deg,#0875ef,#27b6ff); color:#fff; font-size:15px; font-weight:800; cursor:pointer; }
+  button:hover { filter:brightness(1.08); }
+  .result { display:none; margin-top:18px; border:1px solid #285b91; background:#081526; border-radius:12px; padding:15px; white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.6; font-size:13px; }
+  .result.show { display:block; }
+  .service-options { display:none; border:1px solid #254b74; background:#0b1b2e; border-radius:12px; padding:14px; margin:0 0 18px; }
+  .service-options.show { display:block; }
+  .option-title { display:block; margin-bottom:9px; font-size:13px; font-weight:700; }
+  .choice-row { display:flex; flex-wrap:wrap; gap:9px; margin-bottom:14px; }
+  .choice { flex:1; min-width:135px; border:1px solid #2a3b55; border-radius:10px; padding:11px; background:#080f1b; cursor:pointer; font-size:13px; }
+  .choice input { width:auto; min-height:0; margin:0 6px 0 0; accent-color:#1688ff; }
+  .service-options .hint { margin:0; }
+  .result-actions { display:flex; gap:9px; margin-top:12px; }
+  .result-actions button { font-size:12px; min-height:42px; }
+  .result-actions .secondary { background:#1a2b42; border:1px solid #304863; }
+  footer { text-align:center; color:#71819a; font-size:11px; margin-top:18px; line-height:1.6; }
+  @media(max-width:480px) { .card { padding:17px; } .two { grid-template-columns:1fr; gap:0; } .platforms { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">KENZORA</div>
+    <h1>BOOSTING <span>SERVICE</span></h1>
+    <p class="intro">Choose your platform and service, then enter the target link and quantity to prepare your order.</p>
+  </header>
+
+  <main class="card">
+    <h2>Place an Order</h2>
+    <p class="subhead">Complete the fields below. No fixed price list is displayed.</p>
+
+    <form id="orderForm">
+      <div class="field">
+        <label class="field-label">Platform</label>
+        <div class="platforms">
+          <div class="platform"><input type="radio" id="fb" name="platform" value="Facebook" checked><label for="fb">Facebook</label></div>
+          <div class="platform"><input type="radio" id="ig" name="platform" value="Instagram"><label for="ig">Instagram</label></div>
+          <div class="platform"><input type="radio" id="tt" name="platform" value="TikTok"><label for="tt">TikTok</label></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="service">Service</label>
+        <select id="service" required>
+          <option value="">Choose a service</option>
+          <option>Followers</option>
+          <option>Video Views</option>
+          <option>Post Likes / Reactions</option>
+          <option>Shares</option>
+          <option>Comments</option>
+          <option>Live Viewers</option>
+          <option>Other (specify in notes)</option>
+        </select>
+      </div>
+
+      <section class="service-options" id="serviceOptions">
+        <span class="option-title">Retention Type</span>
+        <div class="choice-row">
+          <label class="choice"><input type="radio" name="retention" value="Non-Drop" checked> Non-Drop</label>
+          <label class="choice"><input type="radio" name="retention" value="Drop"> Drop</label>
+        </div>
+        <span class="option-title">Profile Type</span>
+        <div class="choice-row">
+          <label class="choice"><input type="radio" name="profileType" value="Non-Hidden (Public)" checked> Non-Hidden (Public)</label>
+          <label class="choice"><input type="radio" name="profileType" value="Hidden Profile"> Hidden Profile</label>
+        </div>
+        <div class="hint" id="durationHint">Estimated duration depends on provider availability. Hidden profiles may not be supported by every provider.</div>
+      </section>
+
+      <div class="budget" id="rateInfo">
+        <label>Service rate</label>
+        <div id="rateText">Choose a service to see the sample rate.</div>
+        <small>Same sample rates are used for Facebook, Instagram, and TikTok. Rates are editable in this website file.</small>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="target">Targeted Link</label>
+        <input id="target" type="url" placeholder="Paste profile, video, or post link (https://...)" required>
+        <div class="hint">Enter the link to the target profile, video, or post.</div>
+      </div>
+
+      <div class="two">
+        <div class="field">
+          <label class="field-label" for="payment">Your Payment (₱)</label>
+          <input id="payment" type="number" min="10" max="1000" step="5" step="1" value="10" placeholder="₱10–₱1,000" required>
+          <div class="hint">Minimum ₱10 · Maximum ₱1,000</div>
+        </div>
+        <div class="field">
+          <label class="field-label" for="quantity">Calculated Quantity</label>
+          <input id="quantity" type="text" value="100" readonly aria-live="polite">
+          <div class="hint" id="quantityHint">Quantity updates automatically based on payment and service.</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="notes">Additional Notes (optional)</label>
+        <input id="notes" type="text" maxlength="180" placeholder="Any details for your order">
+      </div>
+
+      <button type="submit">Send Order to Telegram Group</button>
+    </form>
+
+    <div id="result" class="result" aria-live="polite"></div>
+    <div class="result-actions" id="actions" style="display:none">
+      <button type="button" id="copyBtn">Copy Order Details</button>
+    </div>
+  </main>
+  <footer>KENZORA BOOSTING SERVICE<br>Payment instructions are provided separately in Telegram. Drop/Non-Drop and Hidden Profile availability and processing times depend on the actual service provider.</footer>
+</div>
+<script>
+const form = document.getElementById('orderForm');
+const result = document.getElementById('result');
+const actions = document.getElementById('actions');
+const paymentInput = document.getElementById('payment');
+const serviceOptions = document.getElementById('serviceOptions');
+const durationHint = document.getElementById('durationHint');
+const quantityInput = document.getElementById('quantity');
+const serviceSelect = document.getElementById('service');
+const rateText = document.getElementById('rateText');
+const quantityHint = document.getElementById('quantityHint');
+let orderText = '';
+const telegramGroupLink = 'https://t.me/+WbdF3aFC5JxkMDQ9';
+
+// Sample rates per ₱10. Confirm rates with your actual provider before accepting payments.
+const rates = {
+  'Post Likes / Reactions': { qty: 100, unit: 'reactions' },
+  'Video Views': { qty: 200, unit: 'views' },
+  'Followers': { qty: 50, unit: 'followers' },
+  'Shares': { qty: 20, unit: 'shares' },
+  'Comments': { qty: 10, unit: 'comments' },
+  'Live Viewers': { qty: 20, unit: 'viewers' },
+  'Other (specify in notes)': { qty: 10, unit: 'units' }
+};
+function currentPlatform() {
+  return document.querySelector('input[name="platform"]:checked')?.value || '';
+}
+function isEligibleForExtraOptions() {
+  return serviceSelect.value === 'Followers' || serviceSelect.value === 'Post Likes / Reactions';
+}
+function selectedValue(name) {
+  return document.querySelector('input[name="' + name + '"]:checked')?.value || '';
+}
+function updateServiceOptions() {
+  const show = isEligibleForExtraOptions();
+  serviceOptions.classList.toggle('show', show);
+  if (!show) return;
+  const retention = selectedValue('retention');
+  const profileType = selectedValue('profileType');
+  if (profileType === 'Hidden Profile') {
+    durationHint.textContent = 'Hidden Profile: provider support must be confirmed. Processing time may vary and the order may not be available.';
+  } else if (retention === 'Drop') {
+    durationHint.textContent = 'Drop option may process faster if the provider offers it; exact timing is not guaranteed.';
+  } else {
+    durationHint.textContent = 'Non-Drop may take longer depending on the provider’s retention requirements. Exact timing is not guaranteed.';
+  }
+}
+document.querySelectorAll('input[name="retention"], input[name="profileType"]').forEach(el => el.addEventListener('change', updateServiceOptions));
+serviceSelect.addEventListener('change', updateServiceOptions);
+
+function updateQuantity() {
+  const rate = rates[serviceSelect.value];
+  const payment = Number(paymentInput.value);
+  if (!rate) {
+    rateText.textContent = 'Choose a service to see the sample rate.';
+    quantityInput.value = '';
+    quantityHint.textContent = 'Choose a service and enter a payment amount.';
+    return;
+  }
+  rateText.textContent = '₱10 = ' + rate.qty.toLocaleString('en-PH') + ' ' + rate.unit + '.';
+  if (!Number.isFinite(payment) || payment < 10 || payment > 1000) {
+    quantityInput.value = '';
+    quantityHint.textContent = 'Enter a payment between ₱10 and ₱1,000.';
+    return;
+  }
+  const quantity = Math.floor((payment * rate.qty) / 10);
+  quantityInput.value = quantity.toLocaleString('en-PH');
+  quantityHint.textContent = '₱' + payment.toLocaleString('en-PH') + ' = ' + quantity.toLocaleString('en-PH') + ' ' + rate.unit + ' (sample rate).';
+}
+serviceSelect.addEventListener('change', updateQuantity);
+paymentInput.addEventListener('input', updateQuantity);
+document.querySelectorAll('input[name="platform"]').forEach(el => el.addEventListener('change', updateQuantity));
+updateQuantity();
+updateServiceOptions();
+
+form.addEventListener('submit', function(e) {
+  e.preventDefault();
+  const platform = currentPlatform();
+  const service = serviceSelect.value;
+  const target = document.getElementById('target').value.trim();
+  const payment = Number(paymentInput.value);
+  const rate = rates[service];
+  const notes = document.getElementById('notes').value.trim();
+
+  if (!rate) { alert('Please choose a service.'); serviceSelect.focus(); return; }
+  if (!Number.isFinite(payment) || payment < 10 || payment > 1000) {
+    alert('Amount must be between ₱10 and ₱1,000.');
+    paymentInput.focus();
+    return;
+  }
+  const quantity = Math.floor((payment * rate.qty) / 10);
+  quantityInput.value = quantity.toLocaleString('en-PH');
+
+  const extraOptions = isEligibleForExtraOptions()
+    ? [
+        'Retention Type: ' + selectedValue('retention'),
+        'Profile Type: ' + selectedValue('profileType'),
+        'Duration Note: ' + (selectedValue('profileType') === 'Hidden Profile'
+          ? 'Provider support and duration need confirmation'
+          : selectedValue('retention') === 'Drop'
+            ? 'May be faster if provider offers it; not guaranteed'
+            : 'Depends on provider retention requirements')
+      ]
+    : [];
+
+  orderText = [
+    'KENZORA BOOSTING SERVICE — ORDER REQUEST',
+    'Platform: ' + platform,
+    'Service: ' + service,
+    ...extraOptions,
+    'Targeted Link: ' + target,
+    'Budget: ₱' + payment.toLocaleString('en-PH'),
+    'Calculated Quantity: ' + quantity.toLocaleString('en-PH') + ' ' + rate.unit,
+    notes ? 'Notes: ' + notes : ''
+  ].filter(Boolean).join('\n');
+
+  result.textContent = 'Order details are ready. Tap “Copy Order Details”, then paste them into your Telegram group. Payment instructions will be given separately in Telegram. Quantity is calculated proportionally from the selected service rate; sample rates must be confirmed before processing.';
+  result.classList.add('show');
+  actions.style.display = 'flex';
+  result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+document.getElementById('copyBtn').addEventListener('click', async function() {
+  try {
+    await navigator.clipboard.writeText(orderText);
+    this.textContent = 'Copied!';
+    setTimeout(() => this.textContent = 'Copy Order Details', 1800);
+  } catch(e) {
+    const area = document.createElement('textarea');
+    area.value = orderText;
+    document.body.appendChild(area);
+    area.select();
+    document.execCommand('copy');
+    area.remove();
+    this.textContent = 'Copied!';
+    setTimeout(() => this.textContent = 'Copy Order Details', 1800);
+  }
+});
+</script>
+</body>
+</html>
